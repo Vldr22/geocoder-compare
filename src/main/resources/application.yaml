@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: geocoder-compare
+
+  profiles:
+    default: dev
+
+  jpa:
+    open-in-view: false
