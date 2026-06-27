@@ -7,3 +7,17 @@ spring:
 
   jpa:
     open-in-view: false
+
+geocoder:
+  http:
+    connect-timeout: 3s
+    response-timeout: 5s
+
+  yandex:
+    base-url: https://geocode-maps.yandex.ru/v1
+    api-key: ${YANDEX_API_KEY}
+
+  dadata:
+    base-url:  https://cleaner.dadata.ru/api/v1/clean/address
+    api-key: ${DADATA_API_KEY}
+    secret: ${DADATA_SECRET}
