@@ -1,6 +1,7 @@
 package io.github.vldr2212.geocodercompare.service;
 
 import io.github.vldr2212.geocodercompare.exception.AddressNotFoundException;
+import io.github.vldr2212.geocodercompare.exception.ResourceNotFoundException;
 import io.github.vldr2212.geocodercompare.model.entity.GeocodingComparison;
 import io.github.vldr2212.geocodercompare.util.DistanceCalculator;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Сравнение геокодеров Yandex и Dadata по текстовому адресу.
@@ -45,6 +47,13 @@ public class ComparisonService {
         }
 
         return comparison;
+    }
+
+    /**
+     * Возвращает сохранённое сравнение по публичному идентификатору.
+     */
+    public GeocodingComparison getByPublicId(UUID publicId) {
+        return storageService.getByPublicId(publicId);
     }
 
     private BigDecimal distance(GeocodePair results) {
