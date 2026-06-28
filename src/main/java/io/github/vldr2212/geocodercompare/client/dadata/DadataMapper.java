@@ -11,7 +11,13 @@ import java.math.BigDecimal;
 public class DadataMapper {
 
     public GeocodeResult toGeocodeResult(DadataGeoResult address) {
-        return new GeocodeResult(toCoordinates(address), mapPrecision(address.qcGeo()));
+        Coordinates coordinates = toCoordinates(address);
+
+        if (coordinates == null) {
+            return new GeocodeResult(null, GeocodePrecision.NONE);
+        }
+
+        return new GeocodeResult(coordinates, mapPrecision(address.qcGeo()));
     }
 
     private Coordinates toCoordinates(DadataGeoResult address) {

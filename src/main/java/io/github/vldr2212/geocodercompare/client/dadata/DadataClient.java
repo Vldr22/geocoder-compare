@@ -1,5 +1,6 @@
 package io.github.vldr2212.geocodercompare.client.dadata;
 
+import io.github.vldr2212.geocodercompare.client.Dadata;
 import io.github.vldr2212.geocodercompare.client.GeocodeResult;
 import io.github.vldr2212.geocodercompare.client.GeocoderClient;
 import io.github.vldr2212.geocodercompare.exception.GeocoderUnavailableException;
@@ -15,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Optional;
 
+@Dadata
 @Component
 @EnableConfigurationProperties(DadataProperties.class)
 public class DadataClient implements GeocoderClient {
@@ -49,7 +51,7 @@ public class DadataClient implements GeocoderClient {
                     .map(mapper::toGeocodeResult)
                     .filter(result -> result.precision() != GeocodePrecision.NONE);
         } catch (RuntimeException e) {
-            throw new GeocoderUnavailableException(provider(), e);
+            throw GeocoderUnavailableException.forProvider(provider(), e);
         }
     }
 

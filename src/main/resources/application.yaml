@@ -7,11 +7,21 @@ spring:
 
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
 
 geocoder:
   http:
     connect-timeout: 3s
     response-timeout: 5s
+
+  executor:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 50
+    await-termination-seconds: 10
 
   yandex:
     base-url: https://geocode-maps.yandex.ru/v1

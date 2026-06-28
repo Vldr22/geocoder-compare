@@ -9,8 +9,15 @@ public class GeocoderUnavailableException extends RuntimeException {
 
     private final GeocoderProvider provider;
 
-    public GeocoderUnavailableException(GeocoderProvider provider, Throwable cause) {
-        super(String.format("%s%s", ErrorMessages.GEOCODER_UNAVAILABLE, provider), cause);
+    private GeocoderUnavailableException(String message, GeocoderProvider provider, Throwable cause) {
+        super(message, cause);
         this.provider = provider;
+    }
+
+    public static GeocoderUnavailableException forProvider(GeocoderProvider provider, Throwable cause) {
+        return new GeocoderUnavailableException(
+                String.format("%s%s", ErrorMessages.GEOCODER_UNAVAILABLE, provider),
+                provider,
+                cause);
     }
 }

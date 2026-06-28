@@ -15,7 +15,13 @@ public class YandexMapper {
     private static final int LATITUDE_INDEX = 1;
 
     public GeocodeResult toGeocodeResult(YandexResponse.GeoObject geoObject) {
-        return new GeocodeResult(toCoordinates(geoObject), mapPrecision(geoObject));
+        Coordinates coordinates = toCoordinates(geoObject);
+
+        if (coordinates == null) {
+            return new GeocodeResult(null, GeocodePrecision.NONE);
+        }
+
+        return new GeocodeResult(coordinates, mapPrecision(geoObject));
     }
 
     private Coordinates toCoordinates(YandexResponse.GeoObject geoObject) {
