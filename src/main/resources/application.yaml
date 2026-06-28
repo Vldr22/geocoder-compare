@@ -23,6 +23,9 @@ geocoder:
     queue-capacity: 50
     await-termination-seconds: 10
 
+  comparison:
+    reliable-threshold-meters: 100
+
   yandex:
     base-url: https://geocode-maps.yandex.ru/v1
     api-key: ${YANDEX_API_KEY}

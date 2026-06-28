@@ -4,23 +4,29 @@ import io.github.vldr2212.geocodercompare.dto.response.GeocodingComparisonRespon
 import io.github.vldr2212.geocodercompare.dto.response.ProviderResult;
 import io.github.vldr2212.geocodercompare.model.entity.GeocodingComparison;
 import io.github.vldr2212.geocodercompare.model.entity.ProviderGeocoding;
-import io.github.vldr2212.geocodercompare.model.enums.GeocodePrecision;
+import io.github.vldr2212.geocodercompare.util.ReliabilityEvaluator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
  * Маппинг сущности сравнения в ответ API.
  */
 @Component
+@RequiredArgsConstructor
 public class GeocodingComparisonMapper {
 
+    private final ReliabilityEvaluator reliabilityEvaluator;
+
     public GeocodingComparisonResponse toGeocodingResponse(GeocodingComparison comparison) {
+        boolean reliable = reliabilityEvaluator.isReliable(comparison);
+
         return new GeocodingComparisonResponse(
                 comparison.getPublicId(),
                 comparison.getAddress(),
                 toProviderResult(comparison.getYandex()),
                 toProviderResult(comparison.getDadata()),
                 comparison.getDistanceMeters(),
-                reliable(comparison),
+                reliable,
                 comparison.getCreatedAt()
         );
     }
@@ -31,16 +37,5 @@ public class GeocodingComparisonMapper {
         }
 
         return new ProviderResult(geocoding.getLatitude(), geocoding.getLongitude(), geocoding.getPrecision());
-    }
-
-    /**
-     * Результат надёжен, когда оба источника определили адрес с точностью до дома (HOME).
-     */
-    private boolean reliable(GeocodingComparison comparison) {
-        return isHouseLevel(comparison.getYandex()) && isHouseLevel(comparison.getDadata());
-    }
-
-    private boolean isHouseLevel(ProviderGeocoding geocoding) {
-        return geocoding != null && geocoding.getPrecision() == GeocodePrecision.HOUSE;
     }
 }
