@@ -9,13 +9,13 @@ import java.math.RoundingMode;
 /**
  * Расчёт расстояния между двумя точками по формуле Haversine.
  * Сферическая модель Земли (погрешность ~0.5%) достаточна для оценки расхождения
- * геокодеров; результат округляется до целых метров.
+ * геокодеров; результат округляется до сотых метра.
  */
 @Component
 public class DistanceCalculator {
 
     private static final double EARTH_RADIUS_METERS = 6_371_000;
-    private static final int RESULT_SCALE_METERS = 0;
+    private static final int RESULT_SCALE = 2;
 
     public BigDecimal calculateDistance(Coordinates from, Coordinates to) {
         double fromLat = from.latitude().doubleValue();
@@ -26,7 +26,7 @@ public class DistanceCalculator {
 
         double meters = distanceMeters(fromLat, fromLon, toLat, toLon);
 
-        return BigDecimal.valueOf(meters).setScale(RESULT_SCALE_METERS, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(meters).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
     }
 
     private double distanceMeters(double fromLat, double fromLon, double toLat, double toLon) {

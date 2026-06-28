@@ -56,8 +56,8 @@ class DistanceCalculatorTest {
     }
 
     @Test
-    @DisplayName("calculateDistance - результат округлён до целых метров")
-    void calculateDistance_shouldReturnIntegerMeters() {
+    @DisplayName("calculateDistance - результат округлён до сотых метра")
+    void calculateDistance_shouldReturnScaleTwo() {
         // given
         Coordinates from = coordinates(55.7558, 37.6173);
         Coordinates to = coordinates(55.7600, 37.6200);
@@ -66,7 +66,7 @@ class DistanceCalculatorTest {
         BigDecimal result = calculator.calculateDistance(from, to);
 
         // then
-        assertThat(result.scale()).isZero();
+        assertThat(result.scale()).isEqualTo(2);
     }
 
     private Coordinates coordinates(double latitude, double longitude) {
