@@ -1,7 +1,6 @@
 package io.github.vldr2212.geocodercompare.service;
 
 import io.github.vldr2212.geocodercompare.exception.AddressNotFoundException;
-import io.github.vldr2212.geocodercompare.exception.ResourceNotFoundException;
 import io.github.vldr2212.geocodercompare.model.entity.GeocodingComparison;
 import io.github.vldr2212.geocodercompare.util.DistanceCalculator;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +33,12 @@ public class ComparisonService {
         log.debug("Comparing geocoders for address: {}", address);
 
         GeocodePair results = parallelGeocoder.geocode(address);
-        boolean bothFound = results.bothFound();
 
+        if (!results.anyFound()) {
+            throw AddressNotFoundException.forAddress(address);
+        }
+
+        boolean bothFound = results.bothFound();
         BigDecimal distanceMeters = bothFound ? distance(results) : null;
         GeocodingComparison comparison = storageService.save(address, results, distanceMeters);
 
