@@ -12,4 +12,8 @@ public record GeocodePair(
     public boolean bothFound() {
         return yandex != null && dadata != null;
     }
+
+    public boolean anyFound() {
+        return yandex != null || dadata != null;
+    }
 }

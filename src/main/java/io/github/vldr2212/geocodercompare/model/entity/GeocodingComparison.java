@@ -1,5 +1,6 @@
 package io.github.vldr2212.geocodercompare.model.entity;
 
+import io.github.vldr2212.geocodercompare.model.Coordinates;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,16 +35,16 @@ public class GeocodingComparison {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "latitude", column = @Column(name = "yandex_lat", precision = 9, scale = 6)),
-            @AttributeOverride(name = "longitude", column = @Column(name = "yandex_lon", precision = 9, scale = 6)),
+            @AttributeOverride(name = "latitude", column = @Column(name = "yandex_lat", precision = 9, scale = Coordinates.SCALE)),
+            @AttributeOverride(name = "longitude", column = @Column(name = "yandex_lon", precision = 9, scale = Coordinates.SCALE)),
             @AttributeOverride(name = "precision", column = @Column(name = "yandex_precision", length = 16)),
     })
     private ProviderGeocoding yandex;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "latitude", column = @Column(name = "dadata_lat", precision = 9, scale = 6)),
-            @AttributeOverride(name = "longitude", column = @Column(name = "dadata_lon", precision = 9, scale = 6)),
+            @AttributeOverride(name = "latitude", column = @Column(name = "dadata_lat", precision = 9, scale = Coordinates.SCALE)),
+            @AttributeOverride(name = "longitude", column = @Column(name = "dadata_lon", precision = 9, scale = Coordinates.SCALE)),
             @AttributeOverride(name = "precision", column = @Column(name = "dadata_precision", length = 16)),
     })
     private ProviderGeocoding dadata;
