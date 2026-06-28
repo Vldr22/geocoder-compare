@@ -10,4 +10,5 @@ public class ErrorMessages {
 
     // ========== GEOCODER ==========
     public final String GEOCODER_UNAVAILABLE = "Геокодер недоступен: ";
+    public final String ADDRESS_NOT_FOUND = "Адрес не найден хотя бы одним геокодером: ";
 }

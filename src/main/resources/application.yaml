@@ -13,6 +13,12 @@ geocoder:
     connect-timeout: 3s
     response-timeout: 5s
 
+  executor:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 50
+    await-termination-seconds: 10
+
   yandex:
     base-url: https://geocode-maps.yandex.ru/v1
     api-key: ${YANDEX_API_KEY}

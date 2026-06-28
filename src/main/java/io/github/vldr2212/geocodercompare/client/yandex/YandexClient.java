@@ -2,6 +2,7 @@ package io.github.vldr2212.geocodercompare.client.yandex;
 
 import io.github.vldr2212.geocodercompare.client.GeocodeResult;
 import io.github.vldr2212.geocodercompare.client.GeocoderClient;
+import io.github.vldr2212.geocodercompare.client.Yandex;
 import io.github.vldr2212.geocodercompare.exception.GeocoderUnavailableException;
 import io.github.vldr2212.geocodercompare.model.enums.GeocodePrecision;
 import io.github.vldr2212.geocodercompare.model.enums.GeocoderProvider;
@@ -12,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 
+@Yandex
 @Component
 @EnableConfigurationProperties(YandexProperties.class)
 public class YandexClient implements GeocoderClient {
@@ -49,7 +51,7 @@ public class YandexClient implements GeocoderClient {
                     .map(mapper::toGeocodeResult)
                     .filter(result -> result.precision() != GeocodePrecision.NONE);
         } catch (RuntimeException e) {
-            throw new GeocoderUnavailableException(provider(), e);
+            throw GeocoderUnavailableException.forProvider(provider(), e);
         }
     }
 
