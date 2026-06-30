@@ -11,3 +11,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+springdoc:
+  swagger-ui:
+    display-request-duration: true
+    try-it-out-enabled: true
