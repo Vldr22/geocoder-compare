@@ -53,7 +53,9 @@ public class ParallelGeocoder {
     }
 
     private CompletableFuture<GeocodeResult> geocodeAsync(GeocoderClient client, String address) {
-        return CompletableFuture.supplyAsync(() -> client.geocode(address).orElse(null), geocoderExecutor);
+        return CompletableFuture.supplyAsync(() ->
+                client.geocode(address).orElse(null),
+                geocoderExecutor);
     }
 
     private void awaitCompletion(CompletableFuture<?>... futures) {
