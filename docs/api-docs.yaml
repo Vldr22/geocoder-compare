@@ -1,0 +1,165 @@
+openapi: 3.1.0
+info:
+  title: Geocoder Compare API
+  description: "Сервис сравнения геокодеров от **Yandex** и **DaData**: вычисляет\
+    \ расстояние по координатам одного адреса в метрах. \nПринимает текстовый адре\
+    с, параллельно геокодирует его двумя источниками, считает расхождение между то\
+    чками и сохраняет результат в БД.\n\n## Что отдаёт API\nПо каждому источнику в\
+    озвращаются координаты и уровень точности геокодера приведенный к единому форм\
+    ату (`HOUSE`, `STREET`, `LOCALITY`),\nрасхождение между точками `distanceMeters`\
+    \ в метрах и флаг доверия `reliable`, который истинен,\nкогда оба источника оп\
+    ределили адрес до дома и сошлись в пределах порога расстояния.\n\nКачество рез\
+    ультата (`precision`, `reliable`) - это метаданные в теле ответа, а не код ста\
+    туса: \nstreet-level или большое расхождение всё равно вернут `201`, решение о\
+    \ пригодности остаётся за потребителем.\n\n## Формат ответов\n- Успешный ответ\
+    \ - чистый объект результата без обёртки. \n- Ошибки возвращаются стандартным\
+    \ `ProblemDetail` с полями `status`, `title`, `detail`;\nпри недоступности гео\
+    кодера добавляется `provider`, при ошибке валидации - `errors`.\n\n## Коды отв\
+    етов\nAPI использует стандартные HTTP-коды:\n* `201` - сравнение создано,\n* `200`\
+    \ - сохранённое сравнение получено по идентификатору,\n* `400` - невалидный ад\
+    рес, \n* `404` - сравнение по идентификатору не найдено, \n* `422` - хотя бы о\
+    дин источник не нашёл адрес, \n* `502` - геокодер недоступен."
+  contact:
+    name: Vldr22 - GitHub
+    url: https://github.com/Vldr22/geocoder-compare
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: Сравнение геокодеров
+    description: Сравнение координат адреса от Yandex и Dadata
+paths:
+  /api/v1/geocode:
+    post:
+      tags:
+        - Сравнение геокодеров
+      summary: Сравнить геокодирование адреса двумя источниками
+      operationId: compare
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressRequest"
+        required: true
+      responses:
+        "201":
+          description: Сравнение создано
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeocodingComparisonResponse"
+        "400":
+          description: Невалидный адрес
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeocodingComparisonResponse"
+        "422":
+          description: Адрес не найден хотя бы одним источником
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeocodingComparisonResponse"
+        "502":
+          description: Геокодер недоступен
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeocodingComparisonResponse"
+  /api/v1/geocode/{publicId}:
+    get:
+      tags:
+        - Сравнение геокодеров
+      summary: Получить сохранённое сравнение по идентификатору
+      operationId: getByPublicId
+      parameters:
+        - name: publicId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Сравнение найдено
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeocodingComparisonResponse"
+        "404":
+          description: Сравнение не найдено
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GeocodingComparisonResponse"
+components:
+  schemas:
+    AddressRequest:
+      type: object
+      description: Запрос на сравнение геокодеров по адресу
+      properties:
+        address:
+          type: string
+          description: Текстовый адрес
+          example: Москва Сухонская 11
+          maxLength: 500
+          minLength: 0
+      required:
+        - address
+    GeocodingComparisonResponse:
+      type: object
+      description: Результат сравнения геокодеров
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Идентификатор сравнения
+          example: 731f26b1-00ca-4c57-b724-a4f239e1d66d
+        address:
+          type: string
+          description: Запрошенный адрес
+          example: Москва Сухонская 11
+        yandex:
+          $ref: "#/components/schemas/ProviderResult"
+          description: "Результат Yandex; отсутствует, если источник не нашёл адре\
+            с"
+        dadata:
+          $ref: "#/components/schemas/ProviderResult"
+          description: "Результат Dadata; отсутствует, если источник не нашёл адре\
+            с"
+        distanceMeters:
+          type: number
+          description: "Расхождение между точками в метрах; отсутствует, если не в\
+            ычислимо"
+          example: "47.21"
+        reliable:
+          type: boolean
+          description: "Надёжность: обе точки до дома и сошлись в пределах порога"
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Время создания в UTC
+          example: 2026-06-28T13:47:43Z
+    ProviderResult:
+      type: object
+      description: Координаты и точность одного геокодера
+      properties:
+        latitude:
+          type: number
+          description: Широта
+          example: "55.878256"
+        longitude:
+          type: number
+          description: Долгота
+          example: "37.653720"
+        precision:
+          type: string
+          description: Уровень точности
+          enum:
+            - HOUSE
+            - STREET
+            - LOCALITY
+            - NONE
+          example: HOUSE
