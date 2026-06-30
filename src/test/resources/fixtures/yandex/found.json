@@ -1,0 +1,20 @@
+{
+  "response": {
+    "GeoObjectCollection": {
+      "featureMember": [
+        {
+          "GeoObject": {
+            "Point": {
+              "pos": "37.653720 55.878256"
+            },
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "precision": "exact"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
